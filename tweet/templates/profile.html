@@ -1,0 +1,124 @@
+{% extends "tweet_base.html" %}
+{% load static %}
+
+{% block title %}
+
+{{user.username}}
+
+{% endblock %}
+
+{% block content %}
+
+<!-- Profile Card -->
+<div class="h-auto bg-slate-900 dark:bg-slate-900 flex flex-wrap mt-8 justify-center">
+    <div class="container lg:w-2/6 xl:w-2/7 sm:w-full md:w-2/3 bg-white shadow-lg transform duration-200 easy-in-out">
+        <div class="h-32 overflow-hidden z-0">
+            {% if profileData.cover_Image %}
+                <img class="w-full aspect-w-1 aspect-h-1" src="{{ profileData.cover_Image.url }}" alt="cover_image" />
+            {% else %}
+                <img class="w-full aspect-w-1 aspect-h-1" src="{% static 'default_cover_image.jpeg' %}" alt="cover_image" />
+            {% endif %}
+        </div>
+        <div class="flex relative justify-center px-5 z-2 -mt-12">
+            {% if profileData.profile_Image %}
+                <img class="h-32 w-32 bg-white p-2 rounded-full" src="{{ profileData.profile_Image.url }}" alt="profile_image" />
+            {% else %}
+                <img class="h-32 w-32 bg-white p-2 rounded-full" src="{% static 'default_profile_image.svg' %}" alt="profile_image" />
+            {% endif %}
+        </div>
+        <div>
+            <div class="text-center px-14">
+                <h2 class="text-gray-800 text-3xl font-bold">
+                    {% if profileData.first_name %}
+                        {{ profileData.first_name }}
+                        {% if profileData.last_name %}
+                            {{ profileData.last_name }}
+                        {% endif %}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                </h2>
+                {% if profileData.instagram %}
+                    <a class="text-gray-400 mt-2 hover:text-blue-500" href="https://www.instagram.com/{{ profileData.instagram }}/" target="_blank">@{{ user.username }}</a>
+                {% else %}
+                    <a class="text-gray-400 mt-2 hover:text-blue-500" href="/">@{{ user.username }}</a>
+                {% endif %}
+                <p class="mt-2 text-gray-500 text-sm">{{ profileData.bio|default:"This user hasn't written a bio yet." }}</p>
+            </div>
+            <hr class="mt-6" />
+            <div class="flex bg-gray-50">
+                <div class="text-center w-1/2 p-4 hover:bg-gray-100 cursor-pointer">
+                    <p><span class="font-semibold">UC </span> Followers</p>
+                </div>
+                <div class="border"></div>
+                <div class="text-center w-1/2 p-4 hover:bg-gray-100 cursor-pointer">
+                    <p> <span class="font-semibold">{{ tweets.count }} </span> Tweets</p>
+                </div>
+            </div>
+        </div>
+        <!-- Vertical three-dot menu for edit profile -->
+        {% if profileData.user == request.user %}
+            <div class="absolute top-0 right-0 mt-1 mr-2">
+                <a title='Edit Profile' href="{% url 'edit_profile' user.username %}">
+                    <div class=" hover:backdrop-blur-sm hover:bg-white/30 hover:opacity-50 relative rounded-full">
+                        <button class="text-xl text-gray-900  focus:outline-none p-2">
+                            <i class="fa-solid fa-ellipsis fa-xl"></i>
+                        </button>
+                    </div>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- User Tweets -->
+<div class='flex justify-center items-center flex-col gap-4 mx-20 my-4'>
+    <div class='flex text-slate-300 flex-col justify-center items-center gap-2'>
+        {% if tweets %}
+            <h2 class="font-bold text-2xl my-2">Tweets</h2>
+        {% else %}
+            <samp class='inline-block'>No tweets found.</samp>
+            <a href="{% url 'create_tweet' %}">
+                <button type="submit" class="mt-3 text-2xl text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg px-4 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 md:block">Create your First Tweet</button>
+            </a>
+        {% endif %}
+    </div>
+    <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 gap-y-4 w-full'> 
+        {% for tweet in tweets %}
+            <div class="rounded-lg overflow-hidden shadow-lg bg-black min-w-0 md:min-w-64 py-2">
+                <a href='/tweet/profile/{{ tweet.user.username }}/'>
+                    <div class="flex items-center mb-4 px-4">
+                        {% if tweet.user.tweetuserdata.profile_Image %}
+                            <img class="w-8 h-8 rounded-full mr-3" src="{{ tweet.user.tweetuserdata.profile_Image.url }}" alt="Profile Picture">
+                        {% else %}
+                            <img class="w-8 h-8 rounded-full mr-3" src="{% static 'default_profile_image.svg' %}" alt="Default Profile Picture">
+                        {% endif %}
+                        <div class="text-gray-400 text-sm capitalize">{{ tweet.user.username }}</div>
+                    </div>
+                </a>
+                <div class="px-6 py-4">
+                    <p class="text-white font-bold text-lg">{{ tweet.text }}</p>
+                </div>
+                {% if tweet.photo %}
+                    <a href="{{ tweet.photo.url }}" target="_blank"><img class=" object-contain h-48 w-full rounded-lg p-2" src="{{ tweet.photo.url }}" alt="Tweet Image"></a>
+                {% endif %}
+                <div class="px-4 pb-2 text-gray-500 text-xs text-left">
+                    {{ tweet.updated_at }}
+                </div>
+                {% if tweet.user == request.user %}
+                    <div class='flex gap-3 px-4 pb-4 mt-2'> 
+                        <a href="{% url 'edit_tweet' tweet.id %}">
+                            <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-sm text-xl">Edit</button>
+                        </a>
+                        <a href="{% url 'delete_tweet' tweet.id %}">
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-sm text-xl">Delete</button>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>   
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

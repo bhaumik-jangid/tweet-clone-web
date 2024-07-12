@@ -1,0 +1,59 @@
+{% extends "tweet_base.html" %}
+{% load static %}
+
+{% block title %}
+
+{% if form.instance.pk %}
+            Edit Tweet
+        {% else %}
+            Create Tweet
+        {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+<!-- create_tweet.html -->
+
+<div class='flex flex-col items-center mt-4 gap-4'>
+    <h1 class='text-white text-3xl'>
+        {% if form.instance.pk %}
+            Edit Tweet
+        {% else %}
+            Create New Tweet
+        {% endif %}
+    </h1>
+    
+    <div class="rounded-lg overflow-hidden shadow-lg bg-black min-w-0 md:min-w-64 py-2">
+        <form method="POST" enctype="multipart/form-data" class='text-white flex flex-col gap-3'>
+            {% csrf_token %}
+            <div class="flex items-center mb-4 px-4">
+                    {% if user_profile_data.profile_Image %}
+                        <img class="w-8 h-8 rounded-full mr-3" src="{{ user_profile_data.profile_Image.url }}" alt="Profile Picture">
+                    {% else %}
+                        <img class="w-8 h-8 rounded-full mr-3" src="{% static 'default_profile_image.svg' %}" alt="Default Profile Picture">
+                    {% endif %}
+                    <div class="text-gray-400 text-sm capitalize">{{ user.username }}</div>
+            </div>
+            <div class="px-6 pt-4">
+                {{ form.text }}
+            </div>
+            <div class='w-full flex justify-center px-6 py-4'>
+                {% if tweet.photo %}
+                    <a href="{{ tweet.photo.url }}" class='w-full rounded-2xl' target="_blank">
+                        <img class="object-contain h-48 w-full rounded-2xl pb-2" src="{{ tweet.photo.url }}" alt="Tweet Image">
+                    </a>
+                {% endif %}
+            </div>
+            <div class='w-full flex justify-center px-6 py-4'>
+                {{ form.photo }}
+            </div>
+            <div class='flex justify-center w-full px-4 py-2'>
+                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type='submit'>Update</button>    
+            </div>
+        </form> 
+    </div>
+    <a class='text-gray-700 hover:text-blue-400' href="{% url 'tweet_list' %}">Return to tweets</a>
+</div>
+
+{% endblock %}

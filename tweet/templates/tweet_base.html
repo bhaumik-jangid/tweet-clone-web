@@ -1,0 +1,174 @@
+{% load static tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}Django Tailwind{% endblock %}</title>
+    {% tailwind_css %}
+</head>
+
+<body class='dark:bg-slate-900'>
+    
+    <nav class="bg-white dark:bg-gray-900 fixed h-20 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+        <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+            <!-- Logo and Branding Section -->
+            <a href="/tweet" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <img src="{% static 'tweet_logo.svg' %}" class="h-8" alt="Tweet Logo">
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">tweet</span>
+            </a>
+            
+            <!-- Navigation Links and Menu Toggle Button -->
+            <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-4">
+                <!-- Hamburger Menu Toggle Button -->
+                <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                    </svg>
+                </button>
+                
+                <!-- User Authentication Links -->
+                {% if user.is_authenticated %}
+                    <!-- User Profile Link -->
+                    <a href='/tweet/profile/{{user.username}}/' title='Profile' class="hidden md:flex items-center space-x-3 ml-5">
+                        {% if user.tweetuserdata.profile_Image %}
+                            <img class="w-8 h-8 rounded-full" src="{{ user.tweetuserdata.profile_Image.url }}" alt="Profile Picture">
+                        {% else %}
+                            <img class="w-8 h-8 rounded-full" src="{% static 'default_profile_image.svg' %}" alt="Default Profile Picture">
+                        {% endif %}
+                        <div class="text-gray-900 dark:text-white">{{ user.username }}</div>
+                    </a>
+                    <!-- Logout Button -->
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 hidden md:block">Log Out</button>
+                    </form>
+                {% else %}
+                    <!-- Signup and Login Buttons -->
+                    <div class="hidden md:flex space-x-3">
+                        <button class="bg-green-500 hover:bg-green-700 text-black font-bold py-2 px-4 rounded-full"><a href="{% url 'register' %}">Sign up</a></button>
+                        <button class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-full"><a href="{% url 'UserLogin' %}">Log in</a></button>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Expanded Menu Section (hidden on mobile, shown on larger screens) -->
+            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+                <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                    <!-- Navigation Links -->
+                    <li>
+                        <a title='Home' href="/tweet" class="text-2xl block py-2 px-3 {% if request.path == '/tweet/' %}text-blue-700{% else %}text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700{% endif %}">
+                            <i class="fa-solid fa-house"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a title='Create tweet' href="/tweet/create_tweet" class="text-2xl block py-2 px-3 {% if request.path == '/tweet/create_tweet/' %}text-blue-700{% else %}text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700{% endif %}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a title='Search' href='/tweet/search/user/' class="block py-2 px-3 {% if request.path == '/tweet/search/user/' or request.path == '/tweet/search/tweets/'  %}text-blue-700{% else %}text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700{% endif %}">
+                            <i class="fa-solid fa-magnifying-glass text-2xl"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a title='Notifications' href="/tweet/notifications/" class="block py-2 px-3 {% if request.path == '/tweet/notifications/' %}text-blue-700{% else %}text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700{% endif %}">
+                            <i class="fa-solid fa-bell text-2xl"></i>
+                        </a>
+                    </li>
+                    <!-- Profile Link (only shown if user is authenticated) -->
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a title='Profile' href="/tweet/profile/{{user.username}}/" class=" text-2xl block py-2 px-3 {% if request.path == '/tweet/profile/'|add:user.username|add:'/' %}text-blue-700{% else %}text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700{% endif %}">
+                                <i class="fa-solid fa-user"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="mt-20 flex items-center flex-col min-h-screen h-auto">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer class="bg-white dark:bg-gray-900 pb-2 border-t border-gray-600 my-2 ">
+        <div class="mx-auto w-full max-w-screen-xl">
+            <div class="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
+                <div>
+                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Tweet</h2>
+                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                        <li class="mb-4">
+                            <a href="#" class=" hover:underline">About</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Careers</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Brand Center</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Blog</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Help center</h2>
+                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                        <li class="mb-4">
+                            <a href="https://github.com/bhaumik-jangid" target="_blank" class="hover:underline">GitHub</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="https://x.com/BhaumikJangid" target="_blank" class="hover:underline">Twitter</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="https://www.instagram.com/your_shadow047" class="hover:underline" target="_blank">Instagram</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="https://wa.me/7678126653" target="_blank" class="hover:underline">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Legal</h2>
+                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Privacy Policy</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Licensing</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Terms &amp; Conditions</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Download</h2>
+                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">iOS</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Android</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">Windows</a>
+                        </li>
+                        <li class="mb-4">
+                            <a href="#" class="hover:underline">MacOS</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

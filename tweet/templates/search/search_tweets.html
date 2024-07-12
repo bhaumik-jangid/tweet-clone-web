@@ -1,0 +1,47 @@
+{% extends "search/search.html" %}
+{% load static %}
+
+{% block searchContent %}
+    
+<div class="flex flex-wrap gap-6 md:gap-4 lg:gap-6 justify-center">
+    {% if tweets %}
+        {% for tweet in tweets %}
+            <div class="flex flex-col rounded-lg overflow-hidden shadow-lg bg-black min-w-0 md:min-w-64 py-2 w-full md:w-72 lg:w-auto">
+                <div class="flex items-center mb-4 px-4">
+                    {% if tweet.user.tweetuserdata.profile_Image %}
+                        <img class="w-8 h-8 rounded-full mr-3" src="{{ tweet.user.tweetuserdata.profile_Image.url }}" alt="Profile Picture">
+                    {% else %}
+                        <img class="w-8 h-8 rounded-full mr-3" src="{% static 'default_profile_image.svg' %}" alt="Default Profile Picture">
+                    {% endif %}
+                    <div class="text-gray-400 text-sm capitalize">{{ tweet.user.username }}</div>
+                </div>
+                <div class="px-6 py-4">
+                    <p class="text-white font-bold text-lg">{{ tweet.text }}</p>
+                </div>
+                {% if tweet.photo %}
+                    <a href="{{ tweet.photo.url }}" target="_blank">
+                        <img class="object-contain h-48 w-full rounded-lg p-2" src="{{ tweet.photo.url }}" alt="Tweet Image">
+                    </a>
+                {% endif %}
+                <div class="px-4 pb-2 text-gray-500 text-xs text-left">
+                    {{ tweet.updated_at }}
+                </div>
+                {% if tweet.user == request.user %}
+                    <div class='flex gap-3 px-4 pb-4 mt-2'> 
+                        <a href="{% url 'edit_tweet' tweet.id %}">
+                            <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-sm text-xl">Edit</button>
+                        </a>
+                        <a href="{% url 'delete_tweet' tweet.id %}">
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-sm text-xl">Delete</button>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>   
+        {% endfor %}
+    {% else %}
+        <p class="text-gray-400 text-center mt-6">No tweets found.</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}

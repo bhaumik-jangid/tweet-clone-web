@@ -1,0 +1,40 @@
+{% extends "tweet_base.html" %}
+{% load static %}
+
+{% block title %}
+
+Search
+
+{% endblock %}
+
+{% block content %}
+
+<div class='w-1/4 flex flex-col gap-2 justify-center'>
+    <div class="w-full mt-2 flex justify-center items-center">
+        <form method="GET" action="{% if request.path == '/tweet/search/user/' %}{% url 'search_user' %}{% else %}{% url 'search_tweets' %}{% endif %}" class="mt-4 w-full flex">
+            <input class="h-10 py-2 bg-black text-white outline-none text-sm pr-2 rounded-l-full border-2 border-white border-r-0 flex-grow" type="text" id="search" name="query" placeholder="Search something.." /> 
+            <button type="submit" class="h-10 py-2 bg-black border-2 border-white text-white border-l-0 pr-3 p-2 rounded-r-full flex items-center justify-center">
+                <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
+            </button>
+        </form>        
+    </div>
+    <div class="flex text-gray-400 justify-center text-xl font-thin w-full my-3">
+        <a title='Search User' href="/tweet/search/user/" class="w-1/2">
+            <div class="flex flex-col text-center w-full px-8 py-2 hover:bg-gray-800 cursor-pointer rounded-l-lg transition-colors duration-300 {% if request.path == '/tweet/search/user/' %} font-semibold text-white {% else %} text-gray-400 font-thin {% endif %}">
+                <p>User</p>
+            </div>
+        </a>
+        <a title='Search Tweets' href="/tweet/search/tweets/" class="w-1/2">
+            <div class="flex flex-col text-center w-full px-8 py-2 hover:bg-gray-800 cursor-pointer rounded-r-lg transition-colors duration-300 {% if request.path == '/tweet/search/tweets/' %} font-semibold text-white {% else %} text-gray-400 font-thin {% endif %}">
+                <p>Tweet</p>
+            </div>
+        </a>
+    </div>
+    
+    <div class='text-white'>
+        {% block searchContent %}
+
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

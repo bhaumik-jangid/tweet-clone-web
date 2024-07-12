@@ -1,0 +1,15 @@
+{% extends "tweet_base.html" %}
+
+{% block title %}
+
+Notifications
+
+{% endblock %}
+
+{% block content %}
+
+<div class='flex flex-col items-center mt-4 gap-4'>
+    <h1 class='text-white text-3xl'>Nothing to show</h1>
+    <a href={% url 'tweet_list' %}><button class='text-gray-700 hover:text-blue-400' >Return to Twets</button></a>
+</div>
+{% endblock %}

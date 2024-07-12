@@ -1,0 +1,39 @@
+{%extends "search/search.html" %}
+{% load static %}
+
+{% block searchContent %}
+
+<div class='flex flex-col gap-4 w-auto justify-center'>
+    {% if user_datas %}
+        {% for user_data in user_datas %}
+            <a href='/tweet/profile/{{user_data.user.username}}/'>
+                <div title='visit Profile' class='hover:bg-gray-800 transition-colors duration-300 flex items-center py-2 bg-black gap-2 rounded-full w-auto'>
+                    <div class="hidden md:flex items-center space-x-3 mx-5">
+                        {% if user_data.profile_Image %}
+                            <img class="w-8 h-8 rounded-full" src="{{ user_data.profile_Image.url }}" alt="Profile Picture">
+                        {% else %}
+                            <img class="w-8 h-8 rounded-full" src="{% static 'default_profile_image.svg' %}" alt="Default Profile Picture">
+                        {% endif %}
+                    </div>
+                    <div class='px-1'>
+                        <p class='font-bold text-xl'>{{user_data.user.username}}</p>
+                        <p class="text-white text-sm">
+                            {% if user_data.first_name %}
+                                {{ user_data.first_name }}
+                                {% if user_data.last_name %}
+                                    {{ user_data.last_name }}
+                                {% endif %}
+                            {% else %}
+                                {{ user_data.user.username }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <p class="text-gray-400 text-center mt-6">No user found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
