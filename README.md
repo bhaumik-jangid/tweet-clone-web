@@ -3,9 +3,9 @@
 <h2>To get started with the Tweet Clone project, follow these steps:</h2>
 
 1. Clone the repository:
-  ```git clone https://github.com/bhaumik-jangid/Tweet-Clone.git```
+  ```git clone https://github.com/bhaumik-jangid/tweet-clone-web.git```
 2. Navigate into the project directory:
-   ```cd Tweet-Clone```
+   ```cd tweet-clone-web```
 3. Create a virtual environment:
    ```python -m venv venv```
 4. Activate the virtual environment:
